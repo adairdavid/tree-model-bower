@@ -1,83 +1,7 @@
-!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.TreeModel=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-module.exports = (function () {
-  'use strict';
-
-  /**
-   * Find the index to insert an element in array keeping the sort order.
-   *
-   * @param {function} comparatorFn The comparator function which sorted the array.
-   * @param {array} arr The sorted array.
-   * @param {object} el The element to insert.
-   */
-  function findInsertIndex(comparatorFn, arr, el) {
-    var i, len;
-    for (i = 0, len = arr.length; i < len; i++) {
-      if (comparatorFn(arr[i], el) > 0) {
-        break;
-      }
-    }
-    return i;
-  }
-
-  return findInsertIndex;
-})();
-
-},{}],2:[function(_dereq_,module,exports){
-module.exports = (function () {
-  'use strict';
-
-  /**
-   * Sort an array using the merge sort algorithm.
-   *
-   * @param {function} comparatorFn The comparator function.
-   * @param {array} arr The array to sort.
-   * @returns {array} The sorted array.
-   */
-  function mergeSort(comparatorFn, arr) {
-    var len = arr.length, firstHalf, secondHalf;
-    if (len >= 2) {
-      firstHalf = arr.slice(0, len / 2);
-      secondHalf = arr.slice(len / 2, len);
-      return merge(comparatorFn, mergeSort(comparatorFn, firstHalf), mergeSort(comparatorFn, secondHalf));
-    } else {
-      return arr.slice();
-    }
-  }
-
-  /**
-   * The merge part of the merge sort algorithm.
-   *
-   * @param {function} comparatorFn The comparator function.
-   * @param {array} arr1 The first sorted array.
-   * @param {array} arr2 The second sorted array.
-   * @returns {array} The merged and sorted array.
-   */
-  function merge(comparatorFn, arr1, arr2) {
-    var result = [], left1 = arr1.length, left2 = arr2.length;
-    while (left1 > 0 && left2 > 0) {
-      if (comparatorFn(arr1[0], arr2[0]) <= 0) {
-        result.push(arr1.shift());
-        left1--;
-      } else {
-        result.push(arr2.shift());
-        left2--;
-      }
-    }
-    if (left1 > 0) {
-      result.push.apply(result, arr1);
-    } else {
-      result.push.apply(result, arr2);
-    }
-    return result;
-  }
-
-  return mergeSort;
-})();
-
-},{}],3:[function(_dereq_,module,exports){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.TreeModel=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var mergeSort, findInsertIndex;
-mergeSort = _dereq_('mergesort');
-findInsertIndex = _dereq_('find-insert-index');
+mergeSort = require('mergesort');
+findInsertIndex = require('find-insert-index');
 
 module.exports = (function () {
   'use strict';
@@ -129,6 +53,11 @@ module.exports = (function () {
   Node.prototype.isRoot = function () {
     return this.parent === undefined;
   };
+
+  Node.prototype.isLeaf = function () {
+    return this.children.length == 0;
+  };
+
 
   Node.prototype.hasChildren = function () {
     return this.children.length > 0;
@@ -281,6 +210,10 @@ module.exports = (function () {
     return first;
   };
 
+  Node.prototype.leaves = function () {
+    return this.all(function (node) { return node.isLeaf() });
+  };
+
   Node.prototype.drop = function () {
     var indexOfChild;
     if (!this.isRoot()) {
@@ -296,6 +229,81 @@ module.exports = (function () {
   return TreeModel;
 })();
 
-},{"find-insert-index":1,"mergesort":2}]},{},[3])
-(3)
+},{"find-insert-index":2,"mergesort":3}],2:[function(require,module,exports){
+module.exports = (function () {
+  'use strict';
+
+  /**
+   * Find the index to insert an element in array keeping the sort order.
+   *
+   * @param {function} comparatorFn The comparator function which sorted the array.
+   * @param {array} arr The sorted array.
+   * @param {object} el The element to insert.
+   */
+  function findInsertIndex(comparatorFn, arr, el) {
+    var i, len;
+    for (i = 0, len = arr.length; i < len; i++) {
+      if (comparatorFn(arr[i], el) > 0) {
+        break;
+      }
+    }
+    return i;
+  }
+
+  return findInsertIndex;
+})();
+
+},{}],3:[function(require,module,exports){
+module.exports = (function () {
+  'use strict';
+
+  /**
+   * Sort an array using the merge sort algorithm.
+   *
+   * @param {function} comparatorFn The comparator function.
+   * @param {array} arr The array to sort.
+   * @returns {array} The sorted array.
+   */
+  function mergeSort(comparatorFn, arr) {
+    var len = arr.length, firstHalf, secondHalf;
+    if (len >= 2) {
+      firstHalf = arr.slice(0, len / 2);
+      secondHalf = arr.slice(len / 2, len);
+      return merge(comparatorFn, mergeSort(comparatorFn, firstHalf), mergeSort(comparatorFn, secondHalf));
+    } else {
+      return arr.slice();
+    }
+  }
+
+  /**
+   * The merge part of the merge sort algorithm.
+   *
+   * @param {function} comparatorFn The comparator function.
+   * @param {array} arr1 The first sorted array.
+   * @param {array} arr2 The second sorted array.
+   * @returns {array} The merged and sorted array.
+   */
+  function merge(comparatorFn, arr1, arr2) {
+    var result = [], left1 = arr1.length, left2 = arr2.length;
+    while (left1 > 0 && left2 > 0) {
+      if (comparatorFn(arr1[0], arr2[0]) <= 0) {
+        result.push(arr1.shift());
+        left1--;
+      } else {
+        result.push(arr2.shift());
+        left2--;
+      }
+    }
+    if (left1 > 0) {
+      result.push.apply(result, arr1);
+    } else {
+      result.push.apply(result, arr2);
+    }
+    return result;
+  }
+
+  return mergeSort;
+})();
+
+},{}]},{},[1])(1)
 });
